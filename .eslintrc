@@ -35,6 +35,7 @@
         }
       }
     ],
+    "import/prefer-default-export": "warn",
     "indent": [
       "error",
       2,
