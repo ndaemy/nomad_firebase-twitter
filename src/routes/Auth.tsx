@@ -24,7 +24,7 @@ function Auth() {
     <div>
       <form onSubmit={onSubmit}>
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           name="email"
           required
