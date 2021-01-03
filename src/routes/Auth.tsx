@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 
-import { authService } from 'fbConfig';
+import { authService, firebaseInstance } from 'fbConfig';
 
 function Auth() {
   const [email, setEmail] = useState('');
@@ -42,6 +42,24 @@ function Auth() {
     setRegisterMode(prev => !prev);
   }
 
+  async function handleSocialClick(event: React.MouseEvent<HTMLButtonElement>) {
+    const {
+      currentTarget: { name },
+    } = event;
+
+    let provider;
+    if (name === 'google') {
+      provider = new firebaseInstance.auth.GoogleAuthProvider();
+    } else if (name === 'github') {
+      provider = new firebaseInstance.auth.GithubAuthProvider();
+    } else {
+      throw Error();
+    }
+
+    const data = await authService.signInWithPopup(provider);
+    console.log(data);
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -67,8 +85,12 @@ function Auth() {
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <span onClick={toggleAccount}>{registerMode ? 'Log In' : 'Sign Up'}</span>
       <div>
-        <button type="button">Continue with Google</button>
-        <button type="button">Continue with GitHub</button>
+        <button type="button" name="google" onClick={handleSocialClick}>
+          Continue with Google
+        </button>
+        <button type="button" name="github" onClick={handleSocialClick}>
+          Continue with GitHub
+        </button>
       </div>
     </div>
   );
