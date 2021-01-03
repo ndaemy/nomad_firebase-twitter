@@ -1,8 +1,11 @@
 import { useState } from 'react';
 
+import { authService } from 'fbConfig';
+
 function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [registerMode, setRegisterMode] = useState(true);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const {
@@ -16,8 +19,22 @@ function Auth() {
     }
   }
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    try {
+      let data;
+      if (registerMode) {
+        data = await authService.createUserWithEmailAndPassword(
+          email,
+          password,
+        );
+      } else {
+        data = await authService.signInWithEmailAndPassword(email, password);
+      }
+      console.log(data);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   return (
@@ -39,7 +56,7 @@ function Auth() {
           value={password}
           onChange={onChange}
         />
-        <input type="submit" value="Log In" />
+        <input type="submit" value={registerMode ? 'Sign Up' : 'Log In'} />
       </form>
       <div>
         <button type="button">Continue with Google</button>
