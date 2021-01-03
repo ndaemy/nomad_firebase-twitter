@@ -1,5 +1,17 @@
+import { authService } from 'fbConfig';
+
 function Profile() {
-  return <span>Profile</span>;
+  async function handleLogOut() {
+    authService.signOut();
+  }
+
+  return (
+    <>
+      <button type='button' onClick={handleLogOut}>
+        Log Out
+      </button>
+    </>
+  );
 }
 
 export default Profile;

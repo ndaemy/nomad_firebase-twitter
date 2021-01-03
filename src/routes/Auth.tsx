@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 
 import { authService, firebaseInstance } from 'fbConfig';
 
@@ -64,31 +64,31 @@ function Auth() {
     <div>
       <form onSubmit={onSubmit}>
         <input
-          type="email"
-          placeholder="Email"
-          name="email"
+          type='email'
+          placeholder='Email'
+          name='email'
           required
           value={email}
           onChange={onChange}
         />
         <input
-          type="password"
-          placeholder="Password"
-          name="password"
+          type='password'
+          placeholder='Password'
+          name='password'
           required
           value={password}
           onChange={onChange}
         />
-        <input type="submit" value={registerMode ? 'Sign Up' : 'Log In'} />
+        <input type='submit' value={registerMode ? 'Sign Up' : 'Log In'} />
         {error}
       </form>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <span onClick={toggleAccount}>{registerMode ? 'Log In' : 'Sign Up'}</span>
       <div>
-        <button type="button" name="google" onClick={handleSocialClick}>
+        <button type='button' name='google' onClick={handleSocialClick}>
           Continue with Google
         </button>
-        <button type="button" name="github" onClick={handleSocialClick}>
+        <button type='button' name='github' onClick={handleSocialClick}>
           Continue with GitHub
         </button>
       </div>

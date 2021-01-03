@@ -11,6 +11,8 @@ function App() {
     authService.onAuthStateChanged(user => {
       if (user) {
         setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
       }
       setInit(true);
     });
