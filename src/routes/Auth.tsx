@@ -6,6 +6,7 @@ function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [registerMode, setRegisterMode] = useState(true);
+  const [error, setError] = useState('');
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const {
@@ -33,8 +34,12 @@ function Auth() {
       }
       console.log(data);
     } catch (e) {
-      console.error(e);
+      setError(e.message);
     }
+  }
+
+  function toggleAccount() {
+    setRegisterMode(prev => !prev);
   }
 
   return (
@@ -57,7 +62,10 @@ function Auth() {
           onChange={onChange}
         />
         <input type="submit" value={registerMode ? 'Sign Up' : 'Log In'} />
+        {error}
       </form>
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <span onClick={toggleAccount}>{registerMode ? 'Log In' : 'Sign Up'}</span>
       <div>
         <button type="button">Continue with Google</button>
         <button type="button">Continue with GitHub</button>
