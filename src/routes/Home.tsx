@@ -1,9 +1,16 @@
 import { useState } from 'react';
 
+import { dbService } from 'fbConfig';
+
 function Home() {
   const [tweet, setTweet] = useState('');
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    dbService.collection('tweet').add({
+      tweet,
+      createdAt: Date.now(),
+    });
+    setTweet('');
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
