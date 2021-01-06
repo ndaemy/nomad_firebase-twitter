@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import { useEffect, useState } from 'react';
 
+import Tweet from 'components/Tweet';
 import { dbService } from 'fbConfig';
 
 interface HomeProps {
@@ -49,9 +50,11 @@ function Home({ userObj }: HomeProps) {
       </form>
       <div>
         {tweets.map(t => (
-          <div key={t.id}>
-            <h4>{t.text}</h4>
-          </div>
+          <Tweet
+            key={t.id}
+            tweetObj={t}
+            isOwner={t.creatorId === userObj?.uid}
+          />
         ))}
       </div>
     </div>
