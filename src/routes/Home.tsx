@@ -3,30 +3,27 @@ import { useEffect, useState } from 'react';
 
 import { dbService } from 'fbConfig';
 
-function Home() {
+interface HomeProps {
+  userObj: firebase.User | null;
+}
+
+function Home({ userObj }: HomeProps) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState<firebase.firestore.DocumentData[]>([]);
 
-  async function getTweets() {
-    const db = await dbService.collection('tweet').get();
-    db.forEach(document => {
-      const tweetObject = {
-        id: document.id,
-        ...document.data(),
-      };
-      setTweets(prev => [...prev, tweetObject]);
-    });
-  }
-
   useEffect(() => {
-    getTweets();
+    dbService.collection('tweets').onSnapshot(ss => {
+      const tweetArray = ss.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTweets(tweetArray);
+    });
   }, []);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dbService.collection('tweet').add({
-      tweet,
+    dbService.collection('tweets').add({
+      text: tweet,
       createdAt: Date.now(),
+      creatorId: userObj?.uid,
     });
     setTweet('');
   }
@@ -53,7 +50,7 @@ function Home() {
       <div>
         {tweets.map(t => (
           <div key={t.id}>
-            <h4>{t.tweet}</h4>
+            <h4>{t.text}</h4>
           </div>
         ))}
       </div>
