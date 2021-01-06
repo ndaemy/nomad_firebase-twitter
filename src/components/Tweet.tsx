@@ -33,11 +33,15 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dbService.doc(`tweets/${tweetObj.id}`).update({
-      text: newTweet,
-    });
-    setEditing(false);
-    setNewTweet('');
+    if (isOwner) {
+      dbService.doc(`tweets/${tweetObj.id}`).update({
+        text: newTweet,
+      });
+      setEditing(false);
+      setNewTweet('');
+    } else {
+      console.error('You are not the owner!');
+    }
   }
 
   return (
