@@ -24,7 +24,6 @@ function App() {
       ) : (
         'Initializing...'
       )}
-      <footer>Soultree-Fly &copy; {new Date().getFullYear()}</footer>
     </>
   );
 }

@@ -36,6 +36,18 @@ function Home({ userObj }: HomeProps) {
     setTweet(value);
   }
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const {
+      target: { files },
+    } = e;
+    const file = files![0];
+    const reader = new FileReader();
+    reader.onloadend = finishedEvent => {
+      console.log(finishedEvent);
+    };
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -46,6 +58,7 @@ function Home({ userObj }: HomeProps) {
           value={tweet}
           onChange={handleChange}
         />
+        <input type='file' accept='image/*' onChange={handleFileChange} />
         <input type='submit' value='Nweet' />
       </form>
       <div>
