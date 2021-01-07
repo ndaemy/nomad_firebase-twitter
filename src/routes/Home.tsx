@@ -11,6 +11,7 @@ interface HomeProps {
 function Home({ userObj }: HomeProps) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState<firebase.firestore.DocumentData[]>([]);
+  const [attachment, setAttachment] = useState();
 
   useEffect(() => {
     dbService.collection('tweets').onSnapshot(ss => {
@@ -42,10 +43,19 @@ function Home({ userObj }: HomeProps) {
     } = e;
     const file = files![0];
     const reader = new FileReader();
+
     reader.onloadend = finishedEvent => {
-      console.log(finishedEvent);
+      const {
+        // @ts-expect-error
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
     };
     reader.readAsDataURL(file);
+  }
+
+  function handleClearAttachment() {
+    setAttachment(undefined);
   }
 
   return (
@@ -60,6 +70,14 @@ function Home({ userObj }: HomeProps) {
         />
         <input type='file' accept='image/*' onChange={handleFileChange} />
         <input type='submit' value='Nweet' />
+        {attachment && (
+          <div>
+            <img alt='preview' src={attachment} width='50px' height='50px' />
+            <button type='button' onClick={handleClearAttachment}>
+              Clear
+            </button>
+          </div>
+        )}
       </form>
       <div>
         {tweets.map(t => (
