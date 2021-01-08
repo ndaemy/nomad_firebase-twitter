@@ -1,8 +1,9 @@
 import firebase from 'firebase/app';
 import { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import Tweet from 'components/Tweet';
-import { dbService } from 'fbConfig';
+import { dbService, storageService } from 'fbConfig';
 
 interface HomeProps {
   userObj: firebase.User | null;
@@ -11,7 +12,7 @@ interface HomeProps {
 function Home({ userObj }: HomeProps) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState<firebase.firestore.DocumentData[]>([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState<string | null>();
 
   useEffect(() => {
     dbService.collection('tweets').onSnapshot(ss => {
@@ -20,14 +21,17 @@ function Home({ userObj }: HomeProps) {
     });
   }, []);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dbService.collection('tweets').add({
-      text: tweet,
-      createdAt: Date.now(),
-      creatorId: userObj?.uid,
-    });
-    setTweet('');
+    const fileRef = storageService.ref().child(`${userObj?.uid}/${uuid()}`);
+    const response = await fileRef.putString(attachment as string, 'data_url');
+    console.log(response);
+    // dbService.collection('tweets').add({
+    //   text: tweet,
+    //   createdAt: Date.now(),
+    //   creatorId: userObj?.uid,
+    // });
+    // setTweet('');
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -45,11 +49,7 @@ function Home({ userObj }: HomeProps) {
     const reader = new FileReader();
 
     reader.onloadend = finishedEvent => {
-      const {
-        // @ts-expect-error
-        currentTarget: { result },
-      } = finishedEvent;
-      setAttachment(result);
+      setAttachment(reader.result as string);
     };
     reader.readAsDataURL(file);
   }
