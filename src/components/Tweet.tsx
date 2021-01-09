@@ -1,7 +1,7 @@
 import firebase from 'firebase/app';
 import { useState } from 'react';
 
-import { dbService } from 'fbConfig';
+import { dbService, storageService } from 'fbConfig';
 
 interface TweetProps {
   tweetObj: firebase.firestore.DocumentData;
@@ -12,11 +12,12 @@ function Tweet({ tweetObj, isOwner }: TweetProps) {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
 
-  function handleDelete() {
+  async function handleDelete() {
     // eslint-disable-next-line no-alert
     const ok = window.confirm('Are you sure you want to delete this tweet?');
     if (ok) {
-      dbService.doc(`tweets/${tweetObj.id}`).delete();
+      await dbService.doc(`tweets/${tweetObj.id}`).delete();
+      await storageService.refFromURL(tweetObj.attachmentUrl).delete();
     }
   }
 
