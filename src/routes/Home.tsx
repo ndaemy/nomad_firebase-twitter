@@ -23,15 +23,27 @@ function Home({ userObj }: HomeProps) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fileRef = storageService.ref().child(`${userObj?.uid}/${uuid()}`);
-    const response = await fileRef.putString(attachment as string, 'data_url');
-    console.log(response);
-    // dbService.collection('tweets').add({
-    //   text: tweet,
-    //   createdAt: Date.now(),
-    //   creatorId: userObj?.uid,
-    // });
-    // setTweet('');
+    let attachmentUrl = '';
+    if (attachment !== '') {
+      const attachmentRef = storageService
+        .ref()
+        .child(`${userObj!.uid}/${uuid()}`);
+      const response = await attachmentRef.putString(
+        attachment as string,
+        'data_url',
+      );
+      attachmentUrl = await response.ref.getDownloadURL();
+    }
+
+    const tweetObj = {
+      text: tweet,
+      createdAt: Date.now(),
+      creatorId: userObj?.uid,
+      attachmentUrl,
+    };
+    dbService.collection('tweets').add(tweetObj);
+    setTweet('');
+    setAttachment('');
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -48,7 +60,7 @@ function Home({ userObj }: HomeProps) {
     const file = files![0];
     const reader = new FileReader();
 
-    reader.onloadend = finishedEvent => {
+    reader.onloadend = () => {
       setAttachment(reader.result as string);
     };
     reader.readAsDataURL(file);
