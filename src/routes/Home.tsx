@@ -12,7 +12,7 @@ interface HomeProps {
 function Home({ userObj }: HomeProps) {
   const [tweet, setTweet] = useState('');
   const [tweets, setTweets] = useState<firebase.firestore.DocumentData[]>([]);
-  const [attachment, setAttachment] = useState<string | null>();
+  const [attachment, setAttachment] = useState<string>('');
 
   useEffect(() => {
     dbService.collection('tweets').onSnapshot(ss => {
@@ -67,7 +67,7 @@ function Home({ userObj }: HomeProps) {
   }
 
   function handleClearAttachment() {
-    setAttachment(undefined);
+    setAttachment('');
   }
 
   return (
